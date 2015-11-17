@@ -150,12 +150,38 @@ public class DBTest : MonoBehaviour {
     yield return 0;
   }
 
+  class CreateUserLogPost {
+    public int Id { get; set;}
+    public int Value { get; set;}
+  };
   /*  
    * USER LOG CREATE 
    */
   IEnumerator CreateUserLog() {
     string url = "test_user_log_create";
-    yield return 0;
+    CreateUserLogPost sendData = new CreateUserLogPost();
+    sendData.Id = 2;
+    sendData.Value += 9999;
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/json; charset=utf-8";
+
+    string dataStr = JsonMapper.ToJson(sendData);
+    Debug.Log(dataStr);
+
+    byte[] data = System.Text.Encoding.UTF8.GetBytes(dataStr);
+
+
+    using (WWW www = new WWW(HOST + url, data, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      Debug.Log ("text:" + www.text);
+    }
   }
 
   /*  
