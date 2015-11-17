@@ -54,9 +54,11 @@ public class DBTest : MonoBehaviour {
 
   const string HOST = "http://localhost:9999/";
 
+  /////////////////////////////////////////////////
   class SelectUserPost {
     public int Id { get; set;}
   };
+  /////////////////////////////////////////////////
   /**
    * USER SELECT TEST 
    */
@@ -90,10 +92,12 @@ public class DBTest : MonoBehaviour {
   }
     
 
+  /////////////////////////////////////////////////
   class UpdateUserPost {
     public int Id { get; set;}
     public int AddScore { get; set;}
   };
+  /////////////////////////////////////////////////
   /*
    * USER UPDATE
    */
@@ -126,19 +130,49 @@ public class DBTest : MonoBehaviour {
     }
   }
 
+  /////////////////////////////////////////////////
+  class CreateUserPost {
+    public string Name { get; set;}
+  };
+  /////////////////////////////////////////////////
   /*  
    * USER CREATE
    */
   IEnumerator CreateUser() {
     string url = "test_user_create";
-    yield return 0;
+    CreateUserPost sendData = new CreateUserPost();
+    sendData.Name = "fromUnity";
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/json; charset=utf-8";
+
+    string dataStr = JsonMapper.ToJson(sendData);
+    Debug.Log(dataStr);
+
+    byte[] data = System.Text.Encoding.UTF8.GetBytes(dataStr);
+
+
+    using (WWW www = new WWW(HOST + url, data, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      //Debug.Log ("text:" + www.text);
+      RecieveUser user = JsonMapper.ToObject<RecieveUser>(www.text);
+      Debug.Log("RECIEVE Id:" + user.Id+ "Name:" + user.Name + ", Score:" + user.Score);
+    }
   }
 
+  /////////////////////////////////////////////////
   class UserItemPost {
     public int UserId { get; set;}
     public int ItemId { get; set;}
     public int Num { get; set;}
   };
+  /////////////////////////////////////////////////
   /*  
    * USER ITEM SAVE 
    */
@@ -200,10 +234,12 @@ public class DBTest : MonoBehaviour {
     }
   }
 
+  /////////////////////////////////////////////////
   class CreateUserLogPost {
     public int Id { get; set;}
     public int Value { get; set;}
   };
+  /////////////////////////////////////////////////
   /*  
    * USER LOG CREATE 
    */
