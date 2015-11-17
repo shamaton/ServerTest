@@ -134,7 +134,7 @@ public class DBTest : MonoBehaviour {
     yield return 0;
   }
 
-  class SaveUserItemPost {
+  class UserItemPost {
     public int UserId { get; set;}
     public int ItemId { get; set;}
     public int Num { get; set;}
@@ -144,7 +144,7 @@ public class DBTest : MonoBehaviour {
    */
   IEnumerator SaveUserItem() {
     string url = "test_user_item_create";
-    SaveUserItemPost sendData = new SaveUserItemPost();
+    UserItemPost sendData = new UserItemPost();
     sendData.UserId = 1;
     sendData.ItemId = 1;
     sendData.Num = 10;
@@ -174,8 +174,30 @@ public class DBTest : MonoBehaviour {
    * USER ITEM DELETE 
    */
   IEnumerator DeleteUserItem() {
-    string url = "test_user_create";
-    yield return 0;
+    string url = "test_user_item_delete";
+    UserItemPost sendData = new UserItemPost();
+    sendData.UserId = 1;
+    sendData.ItemId = 1;
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/json; charset=utf-8";
+
+    string dataStr = JsonMapper.ToJson(sendData);
+    Debug.Log(dataStr);
+
+    byte[] data = System.Text.Encoding.UTF8.GetBytes(dataStr);
+
+
+    using (WWW www = new WWW(HOST + url, data, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      Debug.Log ("text:" + www.text);
+    }
   }
 
   class CreateUserLogPost {
