@@ -163,7 +163,28 @@ public class DBTest : MonoBehaviour {
    */
   IEnumerator MiscUser() {
     string url = "test_user_misc";
-    yield return 0;
+    // とりあえず空データ
+    UpdateUserPost sendData = new UpdateUserPost();
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/json; charset=utf-8";
+
+    string dataStr = JsonMapper.ToJson(sendData);
+    Debug.Log(dataStr);
+
+    byte[] data = System.Text.Encoding.UTF8.GetBytes(dataStr);
+
+
+    using (WWW www = new WWW(HOST + url, data, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      Debug.Log ("text:" + www.text);
+    }
   }
 
   IEnumerator SetUserTest2() {
