@@ -85,38 +85,84 @@ public class DBTest : MonoBehaviour {
       }
       //Debug.Log ("text:" + www.text);
       RecieveUser user = JsonMapper.ToObject<RecieveUser>(www.text);
-      Debug.Log("RECIEVE Id:" + user.Id+ "Name:" + user.Name + ", Age:" + user.Score);
+      Debug.Log("RECIEVE Id:" + user.Id+ "Name:" + user.Name + ", Score:" + user.Score);
     }
-
   }
+    
 
+  class UpdateUserPost {
+    public int Id { get; set;}
+    public int AddScore { get; set;}
+  };
+  /*
+   * USER UPDATE
+   */
   IEnumerator UpdateUser() {
-    string url = "test_user_create";
-    yield return 0;
+    string url = "test_user_update";
+    UpdateUserPost sendData = new UpdateUserPost();
+    sendData.Id = 2;
+    sendData.AddScore += 123;
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/json; charset=utf-8";
+
+    string dataStr = JsonMapper.ToJson(sendData);
+    Debug.Log(dataStr);
+
+    byte[] data = System.Text.Encoding.UTF8.GetBytes(dataStr);
+
+
+    using (WWW www = new WWW(HOST + url, data, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      //Debug.Log ("text:" + www.text);
+      RecieveUser user = JsonMapper.ToObject<RecieveUser>(www.text);
+      Debug.Log("RECIEVE Id:" + user.Id+ "Name:" + user.Name + ", Score:" + user.Score);
+    }
   }
 
+  /*  
+   * USER CREATE
+   */
   IEnumerator CreateUser() {
     string url = "test_user_create";
     yield return 0;
   }
 
+  /*  
+   * USER ITEM SAVE 
+   */
   IEnumerator SaveUserItem() {
     string url = "test_user_create";
     yield return 0;
   }
 
+  /*  
+   * USER ITEM DELETE 
+   */
   IEnumerator DeleteUserItem() {
     string url = "test_user_create";
     yield return 0;
   }
 
+  /*  
+   * USER LOG CREATE 
+   */
   IEnumerator CreateUserLog() {
-    string url = "test_user_create";
+    string url = "test_user_log_create";
     yield return 0;
   }
 
+  /*  
+   * USER MISC TEST 
+   */
   IEnumerator MiscUser() {
-    string url = "test_user_create";
+    string url = "test_user_misc";
     yield return 0;
   }
 
