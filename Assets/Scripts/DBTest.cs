@@ -18,6 +18,13 @@ public class DBTest : MonoBehaviour {
   }
 
 
+  public class RecieveUser {
+    public int Id { get; set;}
+    public string Name { get; set;}
+    public int Score { get; set;}
+  }
+
+
   public void OnClickButton(string funcName){
     //Connectコルーチンの実行
     //StartCoroutine (SetUserTest());
@@ -45,6 +52,73 @@ public class DBTest : MonoBehaviour {
     }
   }
 
+  const string HOST = "http://localhost:9999/";
+
+  class SelectUserPost {
+    public int Id { get; set;}
+  };
+  /**
+   * USER SELECT TEST 
+   */
+  IEnumerator SelectUser() {
+    string url = "test_user_select";
+
+    SelectUserPost sendData = new SelectUserPost();
+    sendData.Id = 1;
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/json; charset=utf-8";
+
+    string dataStr = JsonMapper.ToJson(sendData);
+    Debug.Log(dataStr);
+
+    byte[] data = System.Text.Encoding.UTF8.GetBytes(dataStr);
+
+
+    using (WWW www = new WWW(HOST + url, data, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      //Debug.Log ("text:" + www.text);
+      RecieveUser user = JsonMapper.ToObject<RecieveUser>(www.text);
+      Debug.Log("RECIEVE Id:" + user.Id+ "Name:" + user.Name + ", Age:" + user.Score);
+    }
+
+  }
+
+  IEnumerator UpdateUser() {
+    string url = "test_user_create";
+    yield return 0;
+  }
+
+  IEnumerator CreateUser() {
+    string url = "test_user_create";
+    yield return 0;
+  }
+
+  IEnumerator SaveUserItem() {
+    string url = "test_user_create";
+    yield return 0;
+  }
+
+  IEnumerator DeleteUserItem() {
+    string url = "test_user_create";
+    yield return 0;
+  }
+
+  IEnumerator CreateUserLog() {
+    string url = "test_user_create";
+    yield return 0;
+  }
+
+  IEnumerator MiscUser() {
+    string url = "test_user_create";
+    yield return 0;
+  }
 
   IEnumerator SetUserTest2() {
     string url2 = "http://localhost:9999/test";
