@@ -27,29 +27,7 @@ public class DBTest : MonoBehaviour {
 
   public void OnClickButton(string funcName){
     //Connectコルーチンの実行
-    //StartCoroutine (SetUserTest());
     StartCoroutine (funcName);
-  }
-
-  IEnumerator SetUserTest() {
-    string url = "http://192.168.56.101/unity_db_test.php";
-
-    DBUsers sendData = new DBUsers ();
-    sendData.id = 1;
-    sendData.name = "superman";
-    sendData.score = 100;
-    WWWForm form = new WWWForm ();
-    form.AddField ("user", JsonMapper.ToJson(sendData));
-    using (WWW www = new WWW(url, form)) {
-      yield return www;
-      if (! string.IsNullOrEmpty (www.error)) {
-        Debug.Log ("error:" + www.error);
-        yield break;
-      }
-      Debug.Log ("text:" + www.text);
-      DBUsers user = JsonMapper.ToObject<DBUsers>(www.text);
-      Debug.Log("id:"+user.id+", name:"+user.name+", score:"+user.score);
-    }
   }
 
   const string HOST = "http://localhost:9999/";
