@@ -30,7 +30,7 @@ public class DBTest : MonoBehaviour {
     StartCoroutine (funcName);
   }
 
-  const string HOST = "http://localhost:9999/";
+  const string HOST = "http://example-elb-1795101482.ap-northeast-1.elb.amazonaws.com/";
 
   /////////////////////////////////////////////////
   class SelectUserPost {
