@@ -315,6 +315,43 @@ public class DBTest : MonoBehaviour {
     }
   }
 
+  /*    
+   * USER MISC TEST 
+   */
+  IEnumerator MsgTest() {
+    string url = "msg_test";
+
+    // テストデータ
+    UpdateUserPost sendData = new UpdateUserPost();
+    sendData.Id = 12345;
+    sendData.AddScore = 9876;
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/x-msgpack";
+
+    var packer = new MsgPack.ObjectPacker();
+    byte[] body = packer.Pack(sendData);
+    Debug.Log (sendData.AddScore);
+
+
+    using (WWW www = new WWW(HOST + url, body, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      Debug.Log ("body:" + www.text);
+      Debug.Log ("aaa" + System.Text.Encoding.UTF8.GetString (body));
+      // unpack
+      var unpacker = new MsgPack.ObjectPacker();
+      var result = unpacker.Unpack<UpdateUserPost>(www.bytes);
+      Debug.Log ("id : " + result.Id + " score : " + result.AddScore);
+    }
+  }
+
+
   private string sha256(string planeStr, string key) {
     System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
     byte[] planeBytes = ue.GetBytes(planeStr);
