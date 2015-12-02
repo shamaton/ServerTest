@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using LitJson;
 
 public class DBTest : MonoBehaviour {
@@ -315,6 +316,50 @@ public class DBTest : MonoBehaviour {
     }
   }
 
+  /*    
+   * USER MISC TEST 
+   */
+  class RecvMsg {
+    public uint Id { get; set;}
+    public int AddScore { get; set;}
+    public string Text { get; set;}
+  };
+  IEnumerator MsgTest() {
+    string url = "msg_test";
+
+    // テストデータ
+    var sendData = new RecvMsg();
+    sendData.Id = 12345;
+    sendData.AddScore = -9876;
+    sendData.Text = "hoge";
+
+    Dictionary<string, string> headers = new Dictionary<string, string>();
+    headers["Content-Type"] = "application/x-msgpack";
+
+    var packer = new MsgPack.ObjectPacker();
+    byte[] body = packer.Pack(sendData);
+    Debug.Log (sendData.AddScore);
+
+
+    using (WWW www = new WWW(HOST + url, body, headers)) {
+
+      yield return www;
+
+      if (! string.IsNullOrEmpty (www.error)) {
+        Debug.Log ("error:" + www.error);
+        yield break;
+      }
+      Debug.Log ("body:" + www.text);
+      Debug.Log ("aaa" + www.responseHeaders);
+
+      var unpacker = new MsgPack.ObjectPacker();
+      // unpack
+      var result = unpacker.Unpack<RecvMsg>(www.bytes);
+      Debug.Log ("id : " + result.Id + " score : " + result.AddScore + " text : " + result.Text);
+    }
+  }
+
+
   private string sha256(string planeStr, string key) {
     System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
     byte[] planeBytes = ue.GetBytes(planeStr);
@@ -327,4 +372,5 @@ public class DBTest : MonoBehaviour {
     }
     return hashStr;
   }
+
 }
