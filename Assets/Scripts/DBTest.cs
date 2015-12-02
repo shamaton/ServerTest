@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using LitJson;
 
 public class DBTest : MonoBehaviour {
@@ -318,13 +319,19 @@ public class DBTest : MonoBehaviour {
   /*    
    * USER MISC TEST 
    */
+  class RecvMsg {
+    public uint Id { get; set;}
+    public int AddScore { get; set;}
+    public string Text { get; set;}
+  };
   IEnumerator MsgTest() {
     string url = "msg_test";
 
     // テストデータ
-    UpdateUserPost sendData = new UpdateUserPost();
+    var sendData = new RecvMsg();
     sendData.Id = 12345;
-    sendData.AddScore = 9876;
+    sendData.AddScore = -9876;
+    sendData.Text = "hoge";
 
     Dictionary<string, string> headers = new Dictionary<string, string>();
     headers["Content-Type"] = "application/x-msgpack";
@@ -343,11 +350,12 @@ public class DBTest : MonoBehaviour {
         yield break;
       }
       Debug.Log ("body:" + www.text);
-      Debug.Log ("aaa" + System.Text.Encoding.UTF8.GetString (body));
-      // unpack
+      Debug.Log ("aaa" + www.responseHeaders);
+
       var unpacker = new MsgPack.ObjectPacker();
-      var result = unpacker.Unpack<UpdateUserPost>(www.bytes);
-      Debug.Log ("id : " + result.Id + " score : " + result.AddScore);
+      // unpack
+      var result = unpacker.Unpack<RecvMsg>(www.bytes);
+      Debug.Log ("id : " + result.Id + " score : " + result.AddScore + " text : " + result.Text);
     }
   }
 
@@ -364,4 +372,5 @@ public class DBTest : MonoBehaviour {
     }
     return hashStr;
   }
+
 }

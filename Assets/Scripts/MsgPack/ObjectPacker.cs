@@ -21,6 +21,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 
+using UnityEngine;
+
 namespace MsgPack
 {
 	public class ObjectPacker
@@ -154,6 +156,11 @@ namespace MsgPack
 		{
 			if (t.IsPrimitive) {
 				if (!reader.Read ()) throw new FormatException ();
+
+        Debug.Log ("--------------------------------");
+        Debug.Log ("reader type ->" + reader.Type);
+        Debug.Log (" t          ->" + t);
+
 				if (t.Equals (typeof (int)) && reader.IsSigned ()) return reader.ValueSigned;
 				else if (t.Equals (typeof (uint)) && reader.IsUnsigned ()) return reader.ValueUnsigned;
 				else if (t.Equals (typeof (float)) && reader.Type == TypePrefixes.Float) return reader.ValueFloat;
