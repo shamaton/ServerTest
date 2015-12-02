@@ -338,7 +338,6 @@ public class DBTest : MonoBehaviour {
 
     var packer = new MsgPack.ObjectPacker();
     byte[] body = packer.Pack(sendData);
-    Debug.Log (sendData.AddScore);
 
 
     using (WWW www = new WWW(HOST + url, body, headers)) {
@@ -349,8 +348,6 @@ public class DBTest : MonoBehaviour {
         Debug.Log ("error:" + www.error);
         yield break;
       }
-      Debug.Log ("body:" + www.text);
-      Debug.Log ("aaa" + www.responseHeaders);
 
       var unpacker = new MsgPack.ObjectPacker();
       // unpack
